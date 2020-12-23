@@ -18,23 +18,28 @@ struct inode
 
 /**
  * @description:  初始化一个inode
- * @param {*}
+ * @param node 需要初始化的inode结点指针
+ * @param size 文件大小
+ * @param type 文件类型
+ * @param link 文件链接数
  * @return {returns 1 on success, 0 otherwise.}
  */
 int init_inode(struct inode *node, int size, int type, int link);
 
 /**
  * @description:  修改一个inode
- * @param {*}
+ * @param node 需要修改的inode的指针
+ * @param inode_index 需要修改的inode的索引号
  * @return {returns 1 on success, 0 otherwise.}
  */
-int write_inode(struct inode *node, int block);
+int write_inode(struct inode *node, int inode_index);
 
 /**
  * @description:  读取一个inode
- * @param {*}
+ * @param node 需要将inode读取出的地址
+ * @param inode_index 需要读取的inode的索引号
  * @return {returns 1 on success, 0 otherwise.}
  */
-int read_inode(struct inode *node, int index);
+int read_inode(struct inode *node, int inode_index);
 
 #endif

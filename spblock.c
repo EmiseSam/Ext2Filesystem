@@ -22,20 +22,27 @@ int init_super_block()
 int write_super_block()
 {
     char buf[DEVICE_BLOCK_SIZE * 2];
+    // 将超级块信息存入缓冲区
     char *p = (char *)&sp_block;
     for (int i = 0; i < sizeof(sp_block); i++)
     {
         buf[i] = p[i];
     }
+    // 将缓冲区内容写入磁盘
     if (disk_write_block(0, &buf[0]) < 0)
+    {
         return 0;
+    }
     if (disk_write_block(1, &buf[DEVICE_BLOCK_SIZE]) < 0)
+    {
         return 0;
+    }
     return 1;
 }
 
 int read_super_block()
 {
+    // 从磁盘读取超级块信息到缓冲区
     char buf[DEVICE_BLOCK_SIZE * 2];
     if (disk_read_block(0, &buf[0]) < 0)
     {
@@ -48,6 +55,7 @@ int read_super_block()
         return 0;
     }
 
+    // 从缓冲区中读取超级块信息
     char *p = (char *)&sp_block;
     for (int i = 0; i < sizeof(sp_block); i++)
     {
@@ -58,6 +66,7 @@ int read_super_block()
 
 int alloc_block()
 {
+    // 没有空闲数据块
     if (sp_block.free_block_count == 0)
         return -1;
 
@@ -83,6 +92,7 @@ int alloc_block()
 
 int alloc_inode()
 {
+    // 没有空闲inode结点
     if (sp_block.free_inode_count == 0)
         return -1;
 
