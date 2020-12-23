@@ -71,6 +71,56 @@ int read_dir_items(struct dir_item ditems[], int data_block_index)
     return 1;
 }
 
+int insert_dir_item(struct inode *dir, char *name, int type, int inode_index, int index)
+{
+    for (int i = 0; i < dir->link; i++)
+    {
+        struct dir_item items[ITEM_PER_BLOCK];
+        read_dir_items(dir->data_block_point[i], items);
+        for (int j = 0; j < ITEM_PER_BLOCK; j++)
+        {
+            if (!items[j].valid)
+            {
+                items[j].inode_id = index;
+                items[j].type = type;
+                items[j].valid = 1;
+                strcpy(items[j].name, name);
+                if (!write_dir_items(items, dir->data_block_point[i]))
+                    return 0;
+                if (!write_inode(dir, inode_index))
+                    return 0;
+                return 1;
+            }
+        }
+    }
+
+    int new_block_index = alloc_block();
+    dir->data_block_point[dir->link] = new_block_index;
+    dir->link++;
+    dir->size += ITEM_SIZE;
+
+    struct dir_item items[ITEM_PER_BLOCK];
+    for (int i = 0; i < ITEM_PER_BLOCK; i++)
+    {
+        if (!init_dir_item(&items[i], 0, 0, Dir, ""))
+        {
+            printf("initial dir item failed.\n");
+            return 0;
+        }
+    }
+
+    if (!write_dir_items(items, new_block_index))
+    {
+        return 0;
+    }
+    if (!write_inode(dir, inode_index))
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
 int init_dir(int *index)
 {
     // 获取一个空的inode结点
