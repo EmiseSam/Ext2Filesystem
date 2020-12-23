@@ -39,12 +39,12 @@ int read_super_block()
     char buf[DEVICE_BLOCK_SIZE * 2];
     if (disk_read_block(0, &buf[0]) < 0)
     {
-        printf("Read from disk failed.\n");
+        printf("Fail to read from disk.\n");
         return 0;
     }
     if (disk_read_block(1, &buf[DEVICE_BLOCK_SIZE]) < 0)
     {
-        printf("Read from disk failed.\n");
+        printf("Fail to read from disk.\n");
         return 0;
     }
 
