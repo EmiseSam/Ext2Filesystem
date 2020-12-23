@@ -81,7 +81,7 @@ int alloc_block()
             else
             {
                 sp_block.free_block_count--;
-                sp_block.block_map[i] = sp_block.block_map[i] | 1 << j;
+                sp_block.block_map[i] = sp_block.block_map[i] | (1 << j);
                 write_sp_block();
                 return (i * 32 + j) + 66;
             }
@@ -107,7 +107,7 @@ int alloc_inode()
             else
             {
                 sp_block.free_inode_count--;
-                sp_block.inode_map[i] = sp_block.inode_map[i] | 1 << j;
+                sp_block.inode_map[i] = sp_block.inode_map[i] | (1 << j);
                 write_sp_block();
                 return i * 32 + j;
             }

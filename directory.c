@@ -11,7 +11,7 @@ int init_dir_item(struct dir_item *ditem, int inode_id, int valid, int type, cha
     ditem->valid = valid;
     ditem->type = type;
 
-    // 初始化名称为空
+    // 初始化目录项名称为空
     for (int i = 0; i < NAME_SIZE; i++)
     {
         ditem->name[i] = '\0';
@@ -25,38 +25,46 @@ int init_dir_item(struct dir_item *ditem, int inode_id, int valid, int type, cha
     return 1;
 }
 
-int write_dir_items(struct dir_item ditems[], int block_index)
+int write_dir_items(struct dir_item ditems[], int data_block_index)
 {
-    char buf[DEVICE_BLOCK_SIZE];
+    char buf[DEVICE_BLOCK_SIZE * 2];
 
     // 将目录项一次存入缓冲区
     char *item_pointer = (char *)ditems;
-    for (int i = 0; i < DEVICE_BLOCK_SIZE; i++)
+    for (int i = 0; i < DEVICE_BLOCK_SIZE * 2; i++)
     {
         buf[i] = item_pointer[i];
     }
 
     // 将缓存中的数据存入对应的物理磁盘块
-    if (disk_write_block(block_index, buf) < 0)
+    if (disk_write_block(data_block_index * 2, &buf[0]) < 0)
+    {
+        return 0;
+    }
+    if (disk_write_block(data_block_index * 2 + 1, &buf[DEVICE_BLOCK_SIZE]) < 0)
     {
         return 0;
     }
     return 1;
 }
 
-int read_dir_items(int block_index, struct dir_item ditems[])
+int read_dir_items(struct dir_item ditems[], int data_block_index)
 {
-    char buf[DEVICE_BLOCK_SIZE];
+    char buf[DEVICE_BLOCK_SIZE * 2];
 
     // 读取对应的物理磁盘块到缓冲区
-    if (disk_read_block(block_index, buf) < 0)
+    if (disk_read_block(data_block_index * 2, &buf[0]) < 0)
+    {
+        return 0;
+    }
+    if (disk_read_block(data_block_index * 2 + 1, &buf[DEVICE_BLOCK_SIZE]) < 0)
     {
         return 0;
     }
 
     // 从缓冲区中读取目录项
     char *item_pointer = (char *)ditems;
-    for (int i = 0; i < DEVICE_BLOCK_SIZE; i++)
+    for (int i = 0; i < DEVICE_BLOCK_SIZE * 2; i++)
     {
         item_pointer[i] = buf[i];
     }
@@ -83,20 +91,20 @@ int init_dir(int *index)
     }
 
     // 分配一个空的数据块，用于装载目录项
-    int block_index = alloc_block();
-    if (block_index < 0)
+    int data_block_index = alloc_block();
+    if (data_block_index < 0)
     {
         printf("alloc block failed.\n");
         return 0;
     }
 
     // 编辑对应的索引结点
-    node->block_point[0] = block_index;
+    node->block_point[0] = data_block_index;
     node->link = 1;
     node->size += ITEM_SIZE;
 
-    struct dir_item ditems[ITEM_PER_BLOCK];
-    for (int i = 0; i < ITEM_PER_BLOCK; i++)
+    struct dir_item ditems[ITEM_PER_BLOCK * 2];
+    for (int i = 0; i < ITEM_PER_BLOCK * 2; i++)
     {
         // 按照目录类型初始化目录项
         if (!init_dir_item(&ditems[i], inode_index, 0, Dir, ""))
@@ -107,7 +115,7 @@ int init_dir(int *index)
     }
 
     // 将初始化成功的目录项写入数据块
-    if (!write_dir_items(ditems, block_index))
+    if (!write_dir_items(ditems, data_block_index))
     {
         return 0;
     }
