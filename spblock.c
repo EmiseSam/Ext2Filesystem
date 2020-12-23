@@ -6,12 +6,12 @@
 int init_super_block()
 {
     sp_block.magic_num = MAGICNUM;
-    sp_block.free_block_count = BLOCK_AMOUNT;
+    sp_block.free_data_block_count = DATA_BLOCK_AMOUNT;
     sp_block.free_inode_count = INODE_AMOUNT;
     sp_block.dir_inode_count = 0;
-    for (int i = 0; i < BLOCK_MAP; i++)
+    for (int i = 0; i < DATA_BLOCK_MAP; i++)
     {
-        sp_block.block_map[i] = 0;
+        sp_block.data_block_map[i] = 0;
     }
     for (int i = 0; i < INODE_MAP; i++)
     {
@@ -67,21 +67,21 @@ int read_super_block()
 int alloc_block()
 {
     // 没有空闲数据块
-    if (sp_block.free_block_count == 0)
+    if (sp_block.free_data_block_count == 0)
         return -1;
 
-    for (int i = 0; i < BLOCK_MAP; i++)
+    for (int i = 0; i < DATA_BLOCK_MAP; i++)
     {
-        uint32_t block = sp_block.block_map[i];
+        uint32_t data_block = sp_block.data_block_map[i];
         for (int j = 0; j < 32; j++)
         {
             // 按位与找到空闲的数据块
-            if ((block >> j) & 1)
+            if ((data_block >> j) & 1)
                 continue;
             else
             {
-                sp_block.free_block_count--;
-                sp_block.block_map[i] = sp_block.block_map[i] | (1 << j);
+                sp_block.free_data_block_count--;
+                sp_block.data_block_map[i] = sp_block.data_block_map[i] | (1 << j);
                 write_sp_block();
                 return (i * 32 + j) + 66;
             }

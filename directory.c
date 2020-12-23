@@ -99,7 +99,7 @@ int init_dir(int *index)
     }
 
     // 编辑对应的索引结点
-    node->block_point[0] = data_block_index;
+    node->data_block_point[0] = data_block_index;
     node->link = 1;
     node->size += ITEM_SIZE;
 

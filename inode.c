@@ -9,7 +9,7 @@ int init_inode(struct inode *node, int size, int type, int link)
     node->file_type = type;
     for (int i = 0; i < 6; i++)
     {
-        node->block_point[i] = 0;
+        node->data_block_point[i] = 0;
     }
     return 1;
 }
