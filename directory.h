@@ -43,15 +43,15 @@ int write_dir_items(struct dir_item ditems[], int data_block_index);
 int read_dir_items(struct dir_item ditems[], int data_block_index);
 
 /**
- * @description:  
- * @param
- * @param
- * @param
- * @param
- * @param
+ * @description: 插入一个目录项
+ * @param dir 目录项的上一级目录的索引结点
+ * @param name 目录项的名称
+ * @param type 目录项指向的索引结点类型（文件\目录）
+ * @param dir_inode_index 目录项的上一级目录的索引结点号
+ * @param index 目录项指向的索引结点号
  * @return {returns 1 on success, 0 otherwise}
  */
-int insert_dir_item(struct inode *dir, char *name, int type, int inode_index, int index);
+int insert_dir_item(struct inode *dir, char *name, int type, int dir_inode_index, int index);
 
 /**
  * @description:  初始化一个目录
