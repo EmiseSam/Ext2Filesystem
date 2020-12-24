@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "disk.h"
 
-
 int init_super_block()
 {
     sp_block.magic_num = MAGICNUM;
@@ -83,7 +82,7 @@ int alloc_block()
             {
                 sp_block.free_data_block_count--;
                 sp_block.data_block_map[i] = sp_block.data_block_map[i] | (1 << j);
-                write_sp_block();
+                write_super_block();
                 return (i * 32 + j) + 66;
             }
         }
@@ -94,8 +93,10 @@ int alloc_block()
 int alloc_inode()
 {
     // 没有空闲inode结点
-    if (sp_block.free_inode_count == 0)
+    if (!sp_block.free_inode_count)
+    {
         return -1;
+    }
 
     for (int i = 0; i < INODE_MAP; i++)
     {
@@ -109,7 +110,7 @@ int alloc_inode()
             {
                 sp_block.free_inode_count--;
                 sp_block.inode_map[i] = sp_block.inode_map[i] | (1 << j);
-                write_sp_block();
+                write_super_block();
                 return i * 32 + j;
             }
         }

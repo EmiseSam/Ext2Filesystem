@@ -41,7 +41,7 @@ void mkdir(char *argv[], int argc)
         {
             add_inode(&index, Dir);
             insert_dir_item(&root, name, Dir, root_index, index);
-            printf("make dir %s.\n", argv[1]);
+            printf("make dir %s\n", argv[1]);
         }
         else
         {

@@ -13,7 +13,7 @@
 #define DATA_BLOCK_MAP 128 // 数据块位图占128个uint32_t
 #define INODE_MAP 32       // inode位图占32个uint32_t
 
-#define MAGICNUM 0000 //幻数
+#define MAGICNUM 6666 //幻数
 
 struct super_block
 {
