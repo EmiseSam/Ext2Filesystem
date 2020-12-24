@@ -152,7 +152,6 @@ int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
         {
             continue;
         }
-
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
         read_dir_items(dir_inode->data_block_point[i], ditems);
 
@@ -173,10 +172,10 @@ void print_dir_item(struct inode *dir_inode)
 {
     for (int i = 0; i < dir_inode->link; i++)
     {
-        struct dir_item items[ITEM_PER_BLOCK];
+        struct dir_item items[ITEM_PER_BLOCK * 2];
         read_dir_items(dir_inode->data_block_point[i], items);
 
-        for (int j = 0; j < ITEM_PER_BLOCK; j++)
+        for (int j = 0; j < ITEM_PER_BLOCK * 2; j++)
         {
             if (items[j].valid)
             {

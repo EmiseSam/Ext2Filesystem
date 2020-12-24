@@ -11,10 +11,12 @@
 
 int split(char *agrv_path, char *name)
 {
+    // 需要解析的路径
     char *path_point = (char *)agrv_path;
     memset(directories, '\0', sizeof(directories));
     int count = 0;
 
+    // 忽略.
     if (path_point[0] == '.')
     {
         path_point++;
@@ -45,7 +47,7 @@ int split(char *agrv_path, char *name)
             }
             directories[count][j - 1] = '\0';
             count++;
-            i = i + j;
+            i = i + j - 1;
         }
     }
 

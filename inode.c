@@ -100,7 +100,6 @@ int add_inode(int *index, int type)
     // 编辑对应的索引结点
     node->data_block_point[0] = data_block_index;
     node->link = 1;
-
     if (type = Dir)
     {
         struct dir_item ditems[ITEM_PER_BLOCK * 2];

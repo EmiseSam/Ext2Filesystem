@@ -11,14 +11,15 @@
 #include "process.h"
 #include "inode.h"
 #include "commend.h"
-
 void mkdir(char *argv[], int argc)
 {
     if (argc == 2)
     {
-        char *argv_path = (char *)argv[1];
         char name[NAME_SIZE];
         memset(name, '\0', NAME_SIZE);
+        
+        char *argv_path = (char *)argv[1];
+        
         int count = split(argv_path, name);
 
         struct inode root;
@@ -57,9 +58,11 @@ void touch(char *argv[], int argc)
 {
     if (argc == 2)
     {
-        char *argv_path = (char *)argv[1];
         char name[NAME_SIZE];
         memset(name, '\0', NAME_SIZE);
+        
+        char *argv_path = (char *)argv[1];
+        
         int count = split(argv_path, name);
 
         struct inode root;
@@ -82,7 +85,7 @@ void touch(char *argv[], int argc)
         {
             add_inode(&index, File);
             insert_dir_item(&root, name, File, root_index, index);
-            printf("touch %s.\n", argv[1]);
+            printf("make file %s\n", argv[1]);
         }
         else
         {
@@ -107,7 +110,7 @@ void ls(char *argv[], int argc)
         int root_index = 0;
         read_inode(&root, root_index);
         int index = 0;
-        for (int i = 0; i < count - 1; i++)
+        for (int i = 0; i < count; i++)
         {
             if (!find_dir_item(&root, directories[i], &index, Dir))
             {
@@ -136,24 +139,28 @@ void cp(char *argv[], int argc)
 {
     if (argc == 3)
     {
+        // 存放文件名称
         char name[NAME_SIZE];
+        memset(name, '\0', NAME_SIZE);
 
+        // 源文件路径
         char *argv_path1 = (char *)argv[1];
 
-        memset(name, '\0', NAME_SIZE);
+        // 源路径中的目录个数
         int count1 = split(argv_path1, name);
 
+        // 读取根目录
         struct inode root1;
         int root1_index = 0;
         read_inode(&root1, root1_index);
 
+        // 找到源文件上一级目录
         int index1 = 0;
         for (int i = 0; i < count1 - 1; i++)
         {
             if (!find_dir_item(&root1, directories[i], &index1, Dir))
             {
-                add_inode(&index1, Dir);
-                insert_dir_item(&root1, directories[i], Dir, root1_index, index1);
+                printf("Path %s did not exist.\n", directories[i]);
             }
             read_inode(&root1, index1);
             root1_index = index1;
@@ -162,20 +169,26 @@ void cp(char *argv[], int argc)
         // 判断源文件是否存在
         if (!find_dir_item(&root1, name, &index1, File))
         {
-            printf("%s did not exist.\n", name);
+            printf("File %s did not exist.\n", name);
             return;
         }
-
+        printf("index1 %d\n", index1);
         read_inode(&root1, index1);
 
-        char *argv_path2 = (char *)argv[2];
         memset(name, '\0', NAME_SIZE);
+
+        // 目标路径
+        char *argv_path2 = (char *)argv[2];
+
+        // 目标路径中的目录个数
         int count2 = split(argv_path2, name);
 
+        // 读取根目录
         struct inode root2;
         int root2_index = 0;
         read_inode(&root2, root2_index);
 
+        // 找到目标文件上一级目录
         int index2 = 0;
         for (int i = 0; i < count2 - 1; i++)
         {
@@ -191,17 +204,19 @@ void cp(char *argv[], int argc)
         // 判断目标文件是否存在
         if (!find_dir_item(&root2, name, &index2, File))
         {
+            printf("%s did not exist.\nFormat a new one.\n", name);
             add_inode(&index2, File);
             insert_dir_item(&root2, name, File, root2_index, index2);
         }
+        printf("index2 %d\n", index2);
         read_inode(&root2, root2_index);
+
         root2.link = root1.link;
         root2.size = root2.size;
         for (int i = 0; i < root1.link; i++)
         {
             root2.data_block_point[i] = root1.data_block_point[i];
         }
-        write_inode(&root2, root2_index);
         return;
     }
     printf("Wrong arguments!\n");

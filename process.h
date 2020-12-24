@@ -10,7 +10,7 @@
 
 char directories[128][NAME_SIZE];
 /**
- * @description:  
+ * @description:  分解路径
  * @param agrv_path 命令参数中的路径
  * @param name 命令参数中的路径中的最后一个参数名称
  * @return 路径中的参数数量

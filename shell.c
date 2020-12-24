@@ -1,3 +1,8 @@
+/*
+ * @Description: 
+ * @Author: Emise
+ * @LastEditors: Emise
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +58,7 @@ void setargs(char *cmd, char *argv[], int *argc)
 // 运行命令
 void runcmd(char *argv[], int argc)
 {
-    char* cmd = argv[0];
+    char *cmd = argv[0];
     if (!strcmp(cmd, "ls"))
         ls(argv, argc);
     else if (!strcmp(cmd, "mkdir"))
@@ -84,6 +89,10 @@ int main()
     {
         // 处理命令参数
         setargs(buf, argv, &argc);
+        if (!argc)
+        {
+            continue;
+        }
         // 运行命令
         runcmd(argv, argc);
     }
