@@ -3,6 +3,7 @@
 #include <string.h>
 #include "shell.h"
 #include "filesystem.h"
+#include "commend.h"
 
 int getcmd(char *buf, int nbuf)
 {
@@ -11,14 +12,13 @@ int getcmd(char *buf, int nbuf)
     memset(buf, 0, nbuf);
     fgets(buf, nbuf, stdin);
     if (buf[0] == 0) // EOF
-        return -1;
-    return 0;
+        return 0;
+    return 1;
 }
 
-// 处理命令的每一个参数
 void setargs(char *cmd, char *argv[], int *argc)
 {
-    // argv作为每一个word的首地址
+    // argv[i]和args[i][0]同时指向命令分解后各个参数的存储位置的首地址
     for (int i = 0; i < MAXARGS; i++)
     {
         argv[i] = &args[i][0];
@@ -53,39 +53,23 @@ void setargs(char *cmd, char *argv[], int *argc)
 // 运行命令
 void runcmd(char *argv[], int argc)
 {
-    for (int i = 1; i < argc; i++)
-    {
-        if (!strcmp(argv[i], "|"))
-        {
-            // “ | ”即pipe，说明后面至少还有一个命令要执行
-            execPipe(argv, argc);
-        }
-    }
-
-    // 仅处理一个命令：查看是否有重定向符
-    for (int i = 1; i < argc; i++)
-    {
-        // “ > ” ，执行输出重定向
-        if (!strcmp(argv[i], ">"))
-        {
-            // 关闭stdout
-            close(1);
-            // 打开重定向输出文件
-            open(argv[i + 1], O_CREATE | O_WRONLY);
-            argv[i] = 0;
-        }
-        // “ < ” ，执行输入重定向
-        if (!strcmp(argv[i], "<"))
-        {
-            // 关闭stdin
-            close(0);
-            // 打开重定向输入文件
-            open(argv[i + 1], O_RDONLY);
-            argv[i] = 0;
-        }
-    }
-    exec(argv[0], argv);
+    char* cmd = argv;
+    if (!strcmp(cmd, "ls"))
+        ls(argv, argc);
+    else if (!strcmp(cmd, "mkdir"))
+        mkdir(argv, argc);
+    else if (!strcmp(cmd, "touch"))
+        touch(argv, argc);
+    else if (!strcmp(cmd, "cp"))
+        cp(argv, argc);
+    else if (!strcmp(cmd, "shutdown"))
+        shutdown();
+    else if (!strcmp(cmd, "help"))
+        help();
+    else
+        printf("'%s': command not found.\nSee \'help\'\n", cmd);
 }
+
 int main()
 {
     printf("---FileSystem shell---\n");
@@ -96,13 +80,12 @@ int main()
     }
 
     // 读取命令
-    while (getcmd(buf, sizeof(buf)) >= 0)
+    while (getcmd(buf, sizeof(buf)))
     {
-        char *argv[MAXARGS];
-        int argc = -1;
         // 处理命令参数
         setargs(buf, argv, &argc);
         // 运行命令
         runcmd(argv, argc);
     }
+    return 0;
 }

@@ -12,7 +12,7 @@
  * @param name 文件名
  * @param dir_inode_index 
  * @param index 
- * @return {*}
+ * @return returns 1 on success, 0 otherwise.
  */
 int add_file(struct inode *dir_inode, char *name, int dir_inode_index, int *index);
 

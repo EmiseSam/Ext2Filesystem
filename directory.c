@@ -154,6 +154,7 @@ int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
 
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
         read_dir_items(dir_inode->data_block_point[i], ditems);
+        
         // 逐个搜索目录项
         for (int j = 0; j < ITEM_PER_BLOCK * 2; j++)
         {
@@ -165,4 +166,31 @@ int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
         }
     }
     return 0;
+}
+
+void print_dir_item(struct inode *dir_inode)
+{
+    for (int i = 0; i < dir_inode->link; i++)
+    {
+        struct dir_item items[ITEM_PER_BLOCK];
+        read_dir_items(dir_inode->data_block_point[i], items);
+
+        for (int j = 0; j < ITEM_PER_BLOCK; j++)
+        {
+            if (items[j].valid)
+            {
+                printf("(%s ", items[j].name);
+                if (items[j].type == DIR)
+                {
+                    printf("dictionary)\t");
+                }
+                else
+                {
+                    printf("file)\t");
+                }
+                printf("\n");
+            }
+        }
+    }
+    return;
 }

@@ -27,7 +27,7 @@ struct inode
  * @param size 文件大小
  * @param type 文件类型
  * @param link 文件链接数
- * @return {returns 1 on success, 0 otherwise.}
+ * @return returns 1 on success, 0 otherwise.
  */
 int init_inode(struct inode *node, int size, int type, int link);
 
@@ -35,7 +35,7 @@ int init_inode(struct inode *node, int size, int type, int link);
  * @description:  修改一个inode
  * @param node 需要修改的inode的指针
  * @param inode_index 需要修改的inode的索引号
- * @return {returns 1 on success, 0 otherwise.}
+ * @return returns 1 on success, 0 otherwise.
  */
 int write_inode(struct inode *node, int inode_index);
 
@@ -43,7 +43,7 @@ int write_inode(struct inode *node, int inode_index);
  * @description:  读取一个inode
  * @param node 需要将inode读取出的地址
  * @param inode_index 需要读取的inode的索引号
- * @return {returns 1 on success, 0 otherwise.}
+ * @return returns 1 on success, 0 otherwise.
  */
 int read_inode(struct inode *node, int inode_index);
 
@@ -51,7 +51,7 @@ int read_inode(struct inode *node, int inode_index);
  * @description:  新增一个索引结点
  * @param index 新增的索引结点号
  * @param type 索引结点类型
- * @return {returns 1 on success, 0 otherwise}
+ * @return returns 1 on success, 0 otherwise.
  */
 int add_inode(int *index, int type);
 #endif

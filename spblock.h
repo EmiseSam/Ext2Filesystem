@@ -29,31 +29,31 @@ struct super_block sp_block;
 
 /**
  * @description: 初始化超级块
- * @return {returns 1 on success, 0 otherwise}
+ * @return returns 1 on success, 0 otherwise
  */
 int init_super_block();
 
 /**
  * @description: 写超级块
- * @return {returns 1 on success, 0 otherwise}
+ * @return returns 1 on success, 0 otherwise
  */
 int write_super_block();
 
 /**
  * @description: 读超级块
- * @return {returns 1 on success, 0 otherwise}
+ * @return returns 1 on success, 0 otherwise
  */
 int read_super_block();
 
 /**
  * @description: 申请空闲数据块
- * @return {returns data_block_index on success, -1 otherwise.}
+ * @return returns data_block_index on success, -1 otherwise.
  */
 int alloc_block();
 
 /**
  * @description: 申请空闲inode结点
- * @return {returns inode_index on success, -1 otherwise.}
+ * @return returns inode_index on success, -1 otherwise.
  */
 int alloc_inode();
 
