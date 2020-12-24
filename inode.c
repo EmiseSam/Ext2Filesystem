@@ -80,7 +80,7 @@ int add_inode(int *index, int type)
     }
     *index = inode_index;
 
-    // 按目录类型初始化搜寻到的空inode结点
+    // 按type类型初始化搜寻到的空inode结点
     struct inode *node = &inodes[inode_index];
     if (!init_inode(node, 0, type, 1))
     {
@@ -88,7 +88,7 @@ int add_inode(int *index, int type)
         return 0;
     }
 
-    // 分配一个空的数据块
+    // 数据块预分配
     int data_block_index = alloc_block();
     if (data_block_index < 0)
     {
