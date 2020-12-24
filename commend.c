@@ -3,7 +3,6 @@
  * @Author: Emise
  * @LastEditors: Emise
  */
-#include "commend.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +10,7 @@
 #include "directory.h"
 #include "process.h"
 #include "inode.h"
+#include "commend.h"
 
 void mkdir(char *argv[], int argc)
 {
