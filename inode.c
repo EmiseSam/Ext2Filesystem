@@ -1,5 +1,7 @@
 #include "disk.h"
 #include "inode.h"
+#include "filesystem.h"
+#include "directory.h"
 #include <stdio.h>
 
 int init_inode(struct inode *node, int size, int type, int link)
@@ -64,5 +66,71 @@ int read_inode(struct inode *node, int inode_index)
     {
         p[i] = buf[inode_head + i];
     }
+    return 1;
+}
+
+int add_inode(int *index, int type)
+{
+    // 获取一个空的inode结点
+    int inode_index = alloc_inode();
+    if (inode_index < 0)
+    {
+        printf("Failed to alloc inode.\n");
+        return 0;
+    }
+    *index = inode_index;
+
+    // 按目录类型初始化搜寻到的空inode结点
+    struct inode *node = &inodes[inode_index];
+    if (!init_inode(node, 0, type, 1))
+    {
+        printf("Failed to initial inode.\n");
+        return 0;
+    }
+
+    // 分配一个空的数据块
+    int data_block_index = alloc_block();
+    if (data_block_index < 0)
+    {
+        printf("alloc block failed.\n");
+        return 0;
+    }
+
+    // 编辑对应的索引结点
+    node->data_block_point[0] = data_block_index;
+    node->link = 1;
+
+    if (type = DIR)
+    {
+        struct dir_item ditems[ITEM_PER_BLOCK * 2];
+        for (int i = 0; i < ITEM_PER_BLOCK * 2; i++)
+        {
+            // 按照目录类型初始化目录项
+            if (!init_dir_item(&ditems[i], inode_index, 0, DIR, ""))
+            {
+                printf("Failed to initial directory item.\n");
+                return 0;
+            }
+        }
+
+        // 将初始化成功的目录项写入数据块
+        if (!write_dir_items(ditems, data_block_index))
+        {
+            return 0;
+        }
+    }
+
+    // 将本次创建的索引结点写入索引表
+    if (!write_inode(node, inode_index))
+    {
+        return 0;
+    }
+
+    // 写回超级块
+    if (!write_sp_block())
+    {
+        return 0;
+    }
+
     return 1;
 }

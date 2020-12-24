@@ -19,13 +19,13 @@ int init_system()
     for (int i = 0; i < INODE_AMOUNT; i++)
     {
         // 初始化索引表
-        if (!init_inode(&inode[i], 0, File, 0))
+        if (!init_inode(&inodes[i], 0, FILE, 0))
         {
             printf("Failed to initial inode block.\n");
             return -1;
         }
         // 将索引表写入磁盘块
-        if (!write_inode(&inode[i], i))
+        if (!write_inode(&inodes[i], i))
         {
             printf("Failed to write inode block.\n");
             return -1;
@@ -56,7 +56,7 @@ int open_system()
         // 接着读取上一次的索引表配置
         for (int i = 0; i < INODE_AMOUNT; i++)
         {
-            if (!read_inode(&inode[i], i))
+            if (!read_inode(&inodes[i], i))
             {
                 printf("Failed to load inode block.\n");
                 return -1;

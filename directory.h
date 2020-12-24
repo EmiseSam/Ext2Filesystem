@@ -1,3 +1,8 @@
+/*
+ * @Description: 
+ * @Author: Emise
+ * @LastEditors: Emise
+ */
 #ifndef DIRECTORY_H
 #define DIRECTORY_H
 
@@ -54,9 +59,12 @@ int read_dir_items(struct dir_item ditems[], int data_block_index);
 int insert_dir_item(struct inode *dir, char *name, int type, int dir_inode_index, int index);
 
 /**
- * @description:  初始化一个目录
- * @param index 目录所在的inode结点的索引号
+ * @description:  
+ * @param dir 需要搜索的目录项的上一级索引结点
+ * @param name 需要搜索的目录项的名称
+ * @param index 需要搜索的目录项指向的索引结点号
+ * @param type 需要搜索的目录项的类型（文件\目录）
  * @return {returns 1 on success, 0 otherwise}
  */
-int init_dir(int *index);
+int find_dir_item(struct inode *dir, char *name, int *index, int type);
 #endif

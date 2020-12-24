@@ -9,7 +9,7 @@
 #include "inode.h"
 #include "spblock.h"
 
-struct inode inode[INODE_AMOUNT];
+struct inode inodes[INODE_AMOUNT];
 
 /**
  * @description:  初始化文件系统
