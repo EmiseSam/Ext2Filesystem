@@ -3,11 +3,11 @@
  * @Author: Emise
  * @LastEditors: Emise
  */
-#include "process.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "inode.h"
+#include "process.h"
 
 int split(char *agrv_path, char *name)
 {

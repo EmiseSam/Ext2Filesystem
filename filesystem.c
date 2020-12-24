@@ -1,8 +1,13 @@
-#include "filesystem.h"
-#include "disk.h"
+/*
+ * @Description: 
+ * @Author: Emise
+ * @LastEditors: Emise
+ */
 #include <stdio.h>
+#include "disk.h"
 #include "spblock.h"
 #include "inode.h"
+#include "filesystem.h"
 
 int init_system()
 {
@@ -19,7 +24,7 @@ int init_system()
     for (int i = 0; i < INODE_AMOUNT; i++)
     {
         // 初始化索引表
-        if (!init_inode(&inodes[i], 0, FILE, 0))
+        if (!init_inode(&inodes[i], 0, File, 0))
         {
             printf("Failed to initial inode block.\n");
             return -1;
@@ -33,9 +38,10 @@ int init_system()
     }
 
     // 初始化根目录
-    if (!init_root_dir())
-    {
-        printf("Failed to initial root.\n");
+    int index = 0;
+    add_inode(&index, Dir);
+    if (index != 0) {
+        printf("initial root dir failed.\n");
         return 0;
     }
     printf("Initial super bolck.\n");

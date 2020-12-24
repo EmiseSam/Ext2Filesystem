@@ -8,16 +8,16 @@
 
 #include <inttypes.h>
 
-#define ITEM_SIZE 128           // 一个目录项占用128个字节
-#define ITEM_PER_BLOCK 4        // 一个物理磁盘块可容纳4个目录项
-#define NAME_SIZE 121           // 文件名最大为121个字节
+#define ITEM_SIZE 128    // 一个目录项占用128个字节
+#define ITEM_PER_BLOCK 4 // 一个物理磁盘块可容纳4个目录项
+#define NAME_SIZE 121    // 文件名最大为121个字节
 
-
-struct dir_item {               // 目录项一个更常见的叫法是 dirent(directory entry)
-    uint32_t inode_id;          // 当前目录项表示的文件/目录的对应inode
-    uint16_t valid;             // 当前目录项是否有效 
-    uint8_t type;               // 当前目录项类型（文件/目录）
-    char name[121];             // 目录项表示的文件/目录的文件名/目录名
+struct dir_item
+{                      // 目录项一个更常见的叫法是 dirent(directory entry)
+    uint32_t inode_id; // 当前目录项表示的文件/目录的对应inode
+    uint16_t valid;    // 当前目录项是否有效
+    uint8_t type;      // 当前目录项类型（文件/目录）
+    char name[121];    // 目录项表示的文件/目录的文件名/目录名
 };
 
 /**
@@ -45,7 +45,7 @@ int write_dir_items(struct dir_item ditems[], int data_block_index);
  * @param data_block_index 对应的磁盘块号
  * @return returns 1 on success, 0 otherwise
  */
-int read_dir_items(struct dir_item ditems[], int data_block_index);
+int read_dir_items(int data_block_index, struct dir_item ditems[]);
 
 /**
  * @description: 插入一个目录项

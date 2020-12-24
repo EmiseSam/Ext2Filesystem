@@ -8,8 +8,8 @@
 
 #include <inttypes.h>
 
-#define FILE 1              // 文件类型为2
-#define DIR 2               // 目录类型为2
+#define File 1              // 文件类型为2
+#define Dir 2               // 目录类型为2
 #define INODE_SIZE 32       // 一个inode占用32个字节
 #define INODES_PER_BLOCK 16 // 一个物理磁盘块可容纳16个inode
 
@@ -51,7 +51,7 @@ int read_inode(struct inode *node, int inode_index);
  * @description:  新增一个索引结点
  * @param index 新增的索引结点号
  * @param type 索引结点类型
- * @return returns 1 on success, 0 otherwise.
+ * @return returns 1 on success, 0 otherwise
  */
 int add_inode(int *index, int type);
 #endif

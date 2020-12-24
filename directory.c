@@ -1,9 +1,10 @@
-#include "directory.h"
-#include "disk.h"
 #include <stdio.h>
 #include <string.h>
+#include "spblock.h"
 #include "inode.h"
+#include "disk.h"
 #include "filesystem.h"
+#include "directory.h"
 
 int init_dir_item(struct dir_item *dir_item, int inode_id, int valid, int type, char *name)
 {
@@ -48,7 +49,7 @@ int write_dir_items(struct dir_item ditems[], int data_block_index)
     return 1;
 }
 
-int read_dir_items(struct dir_item ditems[], int data_block_index)
+int read_dir_items(int data_block_index, struct dir_item ditems[])
 {
     char buf[DEVICE_BLOCK_SIZE * 2];
 
@@ -115,7 +116,7 @@ int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode
     struct dir_item ditems[ITEM_PER_BLOCK * 2];
     for (int i = 0; i < ITEM_PER_BLOCK * 2; i++)
     {
-        if (!init_dir_item(&ditems[i], 0, 0, DIR, ""))
+        if (!init_dir_item(&ditems[i], 0, 0, Dir, ""))
         {
             printf("Failed to initial directory item.\n");
             return 0;
@@ -154,7 +155,7 @@ int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
 
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
         read_dir_items(dir_inode->data_block_point[i], ditems);
-        
+
         // 逐个搜索目录项
         for (int j = 0; j < ITEM_PER_BLOCK * 2; j++)
         {
@@ -180,7 +181,7 @@ void print_dir_item(struct inode *dir_inode)
             if (items[j].valid)
             {
                 printf("(%s ", items[j].name);
-                if (items[j].type == DIR)
+                if (items[j].type == Dir)
                 {
                     printf("dictionary)\t");
                 }

@@ -1,8 +1,9 @@
+#include <stdio.h>
 #include "disk.h"
-#include "inode.h"
+#include "spblock.h"
 #include "filesystem.h"
 #include "directory.h"
-#include <stdio.h>
+#include "inode.h"
 
 int init_inode(struct inode *node, int size, int type, int link)
 {
@@ -100,13 +101,13 @@ int add_inode(int *index, int type)
     node->data_block_point[0] = data_block_index;
     node->link = 1;
 
-    if (type = DIR)
+    if (type = Dir)
     {
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
         for (int i = 0; i < ITEM_PER_BLOCK * 2; i++)
         {
             // 按照目录类型初始化目录项
-            if (!init_dir_item(&ditems[i], inode_index, 0, DIR, ""))
+            if (!init_dir_item(&ditems[i], inode_index, 0, Dir, ""))
             {
                 printf("Failed to initial directory item.\n");
                 return 0;
@@ -127,7 +128,7 @@ int add_inode(int *index, int type)
     }
 
     // 写回超级块
-    if (!write_sp_block())
+    if (!write_super_block())
     {
         return 0;
     }

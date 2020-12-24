@@ -1,7 +1,7 @@
-#include "spblock.h"
-#include "disk.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "disk.h"
+#include "spblock.h"
 
 int init_super_block()
 {

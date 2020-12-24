@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shell.h"
 #include "filesystem.h"
 #include "commend.h"
+#include "shell.h"
 
 int getcmd(char *buf, int nbuf)
 {
     // 使用“@”来作为命令行提示符
-    fprintf(2, "@ ");
+    printf("@ ");
     memset(buf, 0, nbuf);
     fgets(buf, nbuf, stdin);
     if (buf[0] == 0) // EOF
@@ -53,7 +53,7 @@ void setargs(char *cmd, char *argv[], int *argc)
 // 运行命令
 void runcmd(char *argv[], int argc)
 {
-    char* cmd = argv;
+    char* cmd = argv[0];
     if (!strcmp(cmd, "ls"))
         ls(argv, argc);
     else if (!strcmp(cmd, "mkdir"))
