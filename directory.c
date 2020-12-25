@@ -75,9 +75,13 @@ int read_dir_items(int data_block_index, struct dir_item ditems[])
 int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode_index, int index)
 {
     // 按已链接数据块查找空的目录项
-    for (int i = 0; i < dir_inode->link; i++)
+    for (int i = 0; i < 6; i++)
     {
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
+        if (!dir_inode->data_block_point[i])
+        {
+            continue;
+        }
         read_dir_items(dir_inode->data_block_point[i], ditems);
 
         // 在数据块中的目录项查找空的目录项
@@ -91,6 +95,7 @@ int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode
                 ditems[j].valid = 1;
                 strcpy(ditems[j].name, name);
                 dir_inode->size += ITEM_SIZE;
+                dir_inode->link++;
 
                 // 将目录项数组写回数据块
                 if (!write_dir_items(ditems, dir_inode->data_block_point[i]))
@@ -110,7 +115,15 @@ int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode
 
     // 新链接一个空的数据块来存目录项
     int data_block_index = alloc_block();
-    dir_inode->data_block_point[dir_inode->link] = data_block_index;
+    int k = 0;
+    for (k = 0; dir_inode->data_block_point[k] && k < 6; k++)
+        ;
+    if (k == 6)
+    {
+        printf("Too many dir_item.\n");
+        return 0;
+    }
+    dir_inode->data_block_point[k] = data_block_index;
     dir_inode->link++;
 
     struct dir_item ditems[ITEM_PER_BLOCK * 2];
@@ -129,6 +142,7 @@ int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode
     ditems[0].valid = 1;
     strcpy(ditems[0].name, name);
     dir_inode->size += ITEM_SIZE;
+    dir_inode->link++;
 
     // 将目录项数组写回数据块
     if (!write_dir_items(ditems, data_block_index))
@@ -146,7 +160,7 @@ int insert_dir_item(struct inode *dir_inode, char *name, int type, int dir_inode
 
 int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
 {
-    for (int i = 0; i < dir_inode->link; i++)
+    for (int i = 0; i < 6; i++)
     {
         if (dir_inode->data_block_point[i] < 0)
         {
@@ -170,9 +184,14 @@ int find_dir_item(struct inode *dir_inode, char *name, int *index, int type)
 
 void print_dir_item(struct inode *dir_inode)
 {
-    for (int i = 0; i < dir_inode->link; i++)
+    for (int i = 0; i < 6; i++)
     {
+        if (!dir_inode->data_block_point[i])
+        {
+            continue;
+        }
         struct dir_item items[ITEM_PER_BLOCK * 2];
+
         read_dir_items(dir_inode->data_block_point[i], items);
 
         for (int j = 0; j < ITEM_PER_BLOCK * 2; j++)

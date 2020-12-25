@@ -83,7 +83,7 @@ int add_inode(int *index, int type)
 
     // 按type类型初始化搜寻到的空inode结点
     struct inode *node = &inodes[inode_index];
-    if (!init_inode(node, 0, type, 1))
+    if (!init_inode(node, 0, type, 0))
     {
         printf("Failed to initial inode.\n");
         return 0;
@@ -99,7 +99,6 @@ int add_inode(int *index, int type)
 
     // 编辑对应的索引结点
     node->data_block_point[0] = data_block_index;
-    node->link = 1;
     if (type = Dir)
     {
         struct dir_item ditems[ITEM_PER_BLOCK * 2];
@@ -118,6 +117,10 @@ int add_inode(int *index, int type)
         {
             return 0;
         }
+    }
+    else
+    {
+        node->link = 1;
     }
 
     // 将本次创建的索引结点写入索引表

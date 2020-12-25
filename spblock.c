@@ -83,7 +83,7 @@ int alloc_block()
                 sp_block.free_data_block_count--;
                 sp_block.data_block_map[i] = sp_block.data_block_map[i] | (1 << j);
                 write_super_block();
-                return (i * 32 + j) + 66;
+                return (i * 32 + j) + 33;
             }
         }
     }

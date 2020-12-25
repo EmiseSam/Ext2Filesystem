@@ -17,9 +17,9 @@ void mkdir(char *argv[], int argc)
     {
         char name[NAME_SIZE];
         memset(name, '\0', NAME_SIZE);
-        
+
         char *argv_path = (char *)argv[1];
-        
+
         int count = split(argv_path, name);
 
         struct inode root;
@@ -60,9 +60,9 @@ void touch(char *argv[], int argc)
     {
         char name[NAME_SIZE];
         memset(name, '\0', NAME_SIZE);
-        
+
         char *argv_path = (char *)argv[1];
-        
+
         int count = split(argv_path, name);
 
         struct inode root;
@@ -79,6 +79,12 @@ void touch(char *argv[], int argc)
             }
             read_inode(&root, index);
             root_index = index;
+        }
+
+        if (root.link >= 48)
+        {
+            printf("Too many files!\n");
+            return;
         }
 
         if (!find_dir_item(&root, name, &index, File))
@@ -172,7 +178,6 @@ void cp(char *argv[], int argc)
             printf("File %s did not exist.\n", name);
             return;
         }
-        printf("index1 %d\n", index1);
         read_inode(&root1, index1);
 
         memset(name, '\0', NAME_SIZE);
@@ -208,7 +213,6 @@ void cp(char *argv[], int argc)
             add_inode(&index2, File);
             insert_dir_item(&root2, name, File, root2_index, index2);
         }
-        printf("index2 %d\n", index2);
         read_inode(&root2, root2_index);
 
         root2.link = root1.link;
